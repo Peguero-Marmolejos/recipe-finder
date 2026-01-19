@@ -9,12 +9,14 @@ import RecipeCard from "./RecipeCard";
  *
  * @returns {JSX.Element} A list of RecipeCard components.
  * */
-function RecipeList({ recipes }) {
+function RecipeList({ recipes, onRecipeClick }) {
 	return (
-		<div className="recipe-list">
-			{recipes.map((recipe) => (
-				<RecipeCard key={recipe.id} recipe={recipe} />
-			))}
+		<div className="container mt-4">
+			<div className="row">
+				{recipes.map((recipe) => (
+					<RecipeCard key={recipe.id} recipe={recipe} onClick={onRecipeClick} />
+				))}
+			</div>
 		</div>
 	);
 }

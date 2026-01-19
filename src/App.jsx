@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import SearchBar from "./components/SearchBar";
 import RecipeList from "./components/RecipeList";
+import RecipeDetails from "./components/RecipeDetails";
 import "./App.css";
 
 /**
@@ -13,6 +14,7 @@ import "./App.css";
 function App() {
 	const [searchItem, setSearchItem] = useState("");
 	const [recipes, setRecipes] = useState([]);
+	const [selectedRecipe, setSelectedRecipe] = useState(null);
 
 	const apiKey = import.meta.env.VITE_API_KEY;
 	console.log("API Key:", apiKey);
@@ -45,14 +47,29 @@ function App() {
 			});
 	};
 
+	const handleRecipeClick = (recipe) => {
+		setSelectedRecipe(recipe);
+		console.log("Selected Recipe:", recipe);
+	};
+
+	const handleCloseDetails = () => {
+		setSelectedRecipe(null);
+	};
+
 	useEffect(() => {
 		searchItem && fetchRecipe(searchItem);
 	}, [searchItem]);
+
 	console.log("Recipe Searching for", recipes);
 	return (
 		<div>
 			<SearchBar searchRecipe={searchRecipe} />
-			{recipes.length > 0 && <RecipeList recipes={recipes} />}
+			{selectedRecipe ?
+				<RecipeDetails recipe={selectedRecipe} onClose={handleCloseDetails} />
+			:	recipes.length > 0 && (
+					<RecipeList recipes={recipes} onRecipeClick={handleRecipeClick} />
+				)
+			}
 		</div>
 	);
 }
