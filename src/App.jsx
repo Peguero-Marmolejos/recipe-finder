@@ -24,6 +24,7 @@ function App() {
 
 	const fetchRecipe = (searchItem) => {
 		const recipeURL = `https://api.spoonacular.com/recipes/complexSearch?query=${searchItem}&apiKey=${apiKey}&number=25`;
+
 		fetch(recipeURL)
 			.then((response) => {
 				if (!response.ok) {
@@ -48,12 +49,40 @@ function App() {
 	};
 
 	const handleRecipeClick = (recipe) => {
-		setSelectedRecipe(recipe);
-		console.log("Selected Recipe:", recipe);
+		fetchRecipeDetails(recipe.id);
 	};
 
 	const handleCloseDetails = () => {
 		setSelectedRecipe(null);
+	};
+
+	const fetchRecipeDetails = (recipeId) => {
+		const detailURL = `https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${apiKey}`;
+		fetch(detailURL)
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+				return response.json();
+			})
+			.then((data) => {
+				console.log("Full Recipe Data:", data);
+				console.log("Instructions type:", typeof data.instructions);
+				console.log("Instructions content:", data.instructions);
+
+				setSelectedRecipe({
+					id: data.id,
+					name: data.title,
+					imageURL: data.image,
+					instructions: data.instructions,
+					ingredients: data.extendedIngredients,
+					readyInMinutes: data.readyInMinutes,
+					servings: data.servings,
+				});
+			})
+			.catch((error) => {
+				console.error("Error fetching recipe details:", error);
+			});
 	};
 
 	useEffect(() => {
